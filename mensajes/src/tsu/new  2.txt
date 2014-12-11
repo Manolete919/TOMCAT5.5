@@ -1,0 +1,48 @@
+Diseño de los indicadores de gestión de información científico-tecnológica.
+Variable:Servicios de la Unidad de Información (Estas variables e indicadores solo son aplicables a empresas con unidades de información).
+Indicadores:
+% de Bases de Datos disponibles en la red o Intranet.
+Nivel de demanda/respuesta a las necesidades informativas.
+% de servicios/productos informativos dirigidos a clientes internos.
+% de publicaciones por especialistas
+Variable:Innovación Tecnológica
+Indicadores:
+% de investigaciones realizadas.
+% de problemas resueltos
+% de diseminación de los resultados.
+Variable:Inteligencia competitiva (Macro y Microentorno)
+Indicadores:
+Niveles de innovación tecnológica de las empresas del ramo.
+Cantidad de temas de investigación delas empresas cubanas del ramo y extranjeras
+Niveles de venta de productos por año en las empresas del ramo.
+Cantidad de segmentos de mercado de las empresas del sector.
+Grado de actualización de la empresa en cuanto a: leyes, disposiciones, normas etc.
+Variable: Vigilancia Tecnológica
+Indicadores:
+% de clientes internos identificados para el (SVT) en la empresa.
+% de clientes internos que reciben la información periódica (SVT)
+% de las demandas tecnológicas identificadas a cubrir por (SVT).
+Frecuencia del monitoreo de información.
+Evaluación del funcionamiento del (SVT).
+Variable: Transferencia de tecnología.
+Indicadores:
+Existencia y grado de actualización de sus demandas tecnológicas
+Existencia de un levantamiento de sus ofertas tecnológicas.
+Nivel de protección de su oferta tecnológica.
+Nivel de conocimiento del estado del ar
+t
+e
+en el s
+e
+ctor donde desarrolla su
+actividad fundamental.
+•
+Nivel de c
+o
+nocimiento de su em
+presa sobr
+e
+los pr
+incipales instrumentos legales
+para enfrentar un proceso de tr
+ansferencia de tecnologías
