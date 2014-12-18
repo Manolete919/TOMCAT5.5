@@ -127,8 +127,7 @@
 		<em id="cargaDeInfo" >Si la lista de numeros aun no ha cargado, Espere por favor</em>
 		
 			<form name="sendMessageForm" method="post" action="enviar" enctype="multipart/form-data">
-				<input type="hidden" name="hiddenfield1" value="ok">
-				Files to upload:
+				Archivos a subir
 				<br/>
 				<input type="file" size="50" name="file1">
 				<input type="submit" value="Upload">

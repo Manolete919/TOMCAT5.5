@@ -35,13 +35,14 @@ public class TestEis {
 		
 		parameters.setDsId(dsId);
 		parameters.setPnIdServicioInformacion(pnIdServicioInformacion);
-		parameters.setPvParametroBind1("92011950");
-		parameters.setPvParametroBind2("19871124");
+		parameters.setPvParametroBind1("1");
+		parameters.setPvParametroBind2("prueba01");
 		EipConsumeServicioResponseElement  response = pt.eipConsumeServicio(parameters);
 		
 		EipConsumeServicio_Out cs = response.getResult();
 		
-		System.out.print(cs.getPvresultadoOut());
+		System.out.print("resultado: "+cs.getPvresultadoOut());
+		System.out.print("error: "+cs.getPverrorOut());
 		
 	
 	} catch (Exception e1) {

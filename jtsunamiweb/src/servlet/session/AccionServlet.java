@@ -27,8 +27,13 @@ import java.util.ResourceBundle;
 
 
 
+
+
+
+
 //import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +49,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.apache.tools.ant.FileScanner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -76,18 +82,31 @@ public class AccionServlet extends HttpServlet {
 
 		private File tf = null;
 
-		public TempFilePopulator(File folder) throws IOException {
+		public TempFilePopulator(File folder,String nombreArchivo) throws IOException {
+			
+			int lastIndexOf = -1;
+			
+			if(!nombreArchivo.equals("")){
+				lastIndexOf = nombreArchivo.lastIndexOf(".");
+				
+				String extension = nombreArchivo.substring(lastIndexOf);
+				String nombreSinExtension = nombreArchivo.substring(0,lastIndexOf);
 
-			tf = File.createTempFile("numeros", ".txt", folder);
+				tf = File.createTempFile(nombreSinExtension, extension, folder);
+			}
+			
+
+			
+			
 		}
 
-		public void populate(String line) throws IOException {
+		/*public void populate(String line) throws IOException {
 			FileWriter fw = new FileWriter(tf, true);
-			fw.write(line /* + "\n" */);
+			fw.write(line  + "\n" );
 			fw.close();
-		}
+		}*/
 
-		public List<String> getContent() throws IOException {
+		/*public List<String> getContent() throws IOException {
 			List<String> lines = new ArrayList<String>();
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					new FileInputStream(tf)));
@@ -97,15 +116,25 @@ public class AccionServlet extends HttpServlet {
 			}
 			br.close();
 			return lines;
-		}
+		}*/
 
 		public boolean deleteTempFile() {
 			return tf.delete();
 		}
 
 		public String toString() {
-			return tf.getAbsolutePath();
+			
+			if(tf != null){
+				return tf.getAbsolutePath();
+			}
+			return null;
+			
 		}
+		
+		public File getCreatedTemporalFile(){
+			return tf;
+		}
+		
 	}
 
 	/**
@@ -286,18 +315,9 @@ public class AccionServlet extends HttpServlet {
 				folder = new File(request.getSession().getServletContext().getRealPath("/"));
 			}
 
-			TempFilePopulator tfp = new TempFilePopulator(folder);
+			TempFilePopulator tfp = null;
 
-			log("Temp file '" + tfp + "' created.");
-
-			/*for (int i = 0; i < telefonosReceptores.length; i++) {
-
-				String linea = telefonosReceptores[i];
-				if (i < telefonosReceptores.length - 1) {
-					linea = linea + "\r\n";
-				}
-				tfp.populate(linea);
-			} */
+			
 			
 			boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
 			if (!isMultipartContent) {
@@ -307,8 +327,11 @@ public class AccionServlet extends HttpServlet {
 			
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
+			FileItem fileItem = null;
+			boolean archivosCargado = false;
 			try {
 				List<FileItem> fields = upload.parseRequest(request);
+				
 				Iterator<FileItem> it = fields.iterator();
 				
 				
@@ -318,29 +341,58 @@ public class AccionServlet extends HttpServlet {
 				
 				
 				while (it.hasNext()) {
-					FileItem fileItem = it.next();
+					
+					fileItem = it.next();
 					boolean isFormField = fileItem.isFormField();
+					
 					if (isFormField) {
-						
-								System.out.println(" FORM FIELD " +
-										fileItem.getString());
+						System.out.println(" FORM FIELD " +fileItem.getString());							
 						
 					} else {
-				
-						System.out.println(" NO FORM FIELD " +
-								fileItem.getString()
-								);
-						tfp.populate(fileItem.getString());
+						
+						if(!fileItem.getName().equals("")){
+							tfp = new TempFilePopulator(folder,fileItem.getName());
+							log("Archivo temporal: '" + tfp + "' creado.");
+						
+							System.out.println(" NOMBRE " +fileItem.getName());
+							try {
+								fileItem.write(tfp.getCreatedTemporalFile());
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						
+							MultipartFileUploader mf = new MultipartFileUploader();
+
+							
+							String mensajeREST = mf.uploadFile(tfp.toString(),fileItem.getContentType(), idUsuario, claveTjsu, idCorporate , mensaje, idShortCode );
+
+
+							// ELIMINAR EL ARCHIVO
+
+							if (eliminarArchivoTemportal == null) {
+								eliminarArchivoTemportal = "SI";
+							}
+
+							if (eliminarArchivoTemportal.toUpperCase().equals("SI")) {
+								if (tfp != null) {
+									if (tfp.deleteTempFile()) {
+										log("Archivo temporal '" + tfp + "' borrado.");
+									} else {
+										log("No se ha podido eliminar el archivo temporal '" + tfp + "'");
+									}
+								}
+							}
+						
+						}else{
+							System.out.println("no ha subido ningun archivo");
+						}
+
+		
+						//tfp.populate(fileItem.getString());
 					}
 				}
 				
-				
-				
-				
-				
-				
-				
-		
 				
 			
 				
@@ -353,34 +405,9 @@ public class AccionServlet extends HttpServlet {
 			
 			
 
-			MultipartFileUploader mf = new MultipartFileUploader();
 
-			String mensajeREST = mf.uploadFile(tfp.toString(), idUsuario, claveTjsu, idCorporate , mensaje, idShortCode );
-
-			List<String> lines = tfp.getContent();
-			for (String line : lines) {
-
-				System.out.println(line);
-
-			}
-
-			// ELIMINAR EL ARCHIVO
-
-			if (eliminarArchivoTemportal == null) {
-				eliminarArchivoTemportal = "SI";
-			}
-
-			if (eliminarArchivoTemportal.toUpperCase().equals("SI")) {
-				if (tfp != null) {
-					if (tfp.deleteTempFile()) {
-						log("Archivo temporal '" + tfp + "' borrado.");
-					} else {
-						log("No se ha podido eliminar el archivo temporal '" + tfp + "'");
-					}
-				}
-			}
 			
-			request.getSession().setAttribute("mensaje", mensajeREST);
+			//request.getSession().setAttribute("mensaje", mensajeREST);
 
 			// FIN DE LA CREACION DE ARCHIVO
 			
@@ -392,9 +419,7 @@ public class AccionServlet extends HttpServlet {
 	private MessageElement[] convertXMLStringtoMessageElement(String xmlString)
 			throws SAXException, IOException, ParserConfigurationException {
 		MessageElement[] m = new MessageElement[1];
-		Document XMLDoc = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder()
-				.parse(new InputSource(new StringReader(xmlString)));
+		Document XMLDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(xmlString)));
 		Element element = XMLDoc.getDocumentElement();
 		m[0] = new MessageElement(element);
 		return m;

@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.ResourceBundle;
  
 /**
@@ -16,7 +15,7 @@ import java.util.ResourceBundle;
  */
 public class MultipartFileUploader {
  
-	public String uploadFile(String path, String usuario, String clave_desencrip, String pvAsunto, String pvMensaje, String idShortCode){
+	public String uploadFile(String path,String contentType,  String usuario, String clave_desencrip, String pvAsunto, String pvMensaje, String idShortCode){
 			
         String charset = "UTF-8";
         String mensajeError = null;
@@ -154,7 +153,11 @@ public class MultipartFileUploader {
             System.out.print("HORA DE CADUCIDAD DE ENVIO DE MENSAJE -->" + fechaEnvio );
     		
     		// add Objec file
-    		multipart.addFilePart("file", file);
+            
+            if(file != null){
+            	multipart.addFilePart("file", file, contentType);
+            }
+    		
             
     		responseRest = multipart.finish();
     

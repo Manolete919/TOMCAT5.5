@@ -11,9 +11,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gson.Gson;
  
@@ -66,10 +63,8 @@ public class MultipartUtility {
      */
     public void addFormField(String name, String value) {
         writer.append("--" + boundary).append(LINE_FEED);
-        writer.append("Content-Disposition: form-data; name=\"" + name + "\"")
-                .append(LINE_FEED);
-        writer.append("Content-Type: text/plain; charset=" + charset).append(
-                LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + name + "\"").append(LINE_FEED);
+        writer.append("Content-Type: text/plain; charset=" + charset).append(LINE_FEED);
         writer.append(LINE_FEED);
         writer.append(value).append(LINE_FEED);
         writer.flush();
@@ -81,7 +76,7 @@ public class MultipartUtility {
      * @param uploadFile a File to be uploaded
      * @throws IOException
      */
-    public void addFilePart(String fieldName, File uploadFile)
+    public void addFilePart(String fieldName, File uploadFile, String contentType)
             throws IOException {
         String fileName = uploadFile.getName();
         writer.append("--" + boundary).append(LINE_FEED);
@@ -89,10 +84,10 @@ public class MultipartUtility {
                 "Content-Disposition: form-data; name=\"" + fieldName
                         + "\"; filename=\"" + fileName + "\"")
                 .append(LINE_FEED);
-        writer.append(
-                "Content-Type: "
-                        + URLConnection.guessContentTypeFromName(fileName))
-                .append(LINE_FEED);
+
+        writer.append("Content-Type: " + contentType).append(LINE_FEED);
+        writer.append("Content-Type: application/vnd.ms-excel" ).append(LINE_FEED);
+        
         writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
         writer.append(LINE_FEED);
         writer.flush();
